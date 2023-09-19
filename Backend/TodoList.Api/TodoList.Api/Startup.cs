@@ -5,11 +5,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using TodoList.Api.Services;
 
 namespace TodoList.Api
 {
+    /// <summary>
+    /// Startup method for todo list api
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Constructor for startup
+        /// </summary>
+        /// <param name="configuration"></param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -17,7 +25,11 @@ namespace TodoList.Api
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// Use this method to add services to the container.
+        /// This method gets called by the runtime. 
+        /// </summary>
+        /// <param name="services">Service Collection</param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options =>
@@ -31,6 +43,7 @@ namespace TodoList.Api
                       });
             });
 
+            services.AddTransient<ITodoItemService, TodoItemService>();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -40,7 +53,12 @@ namespace TodoList.Api
             services.AddDbContext<TodoContext>(opt => opt.UseInMemoryDatabase("TodoItemsDB"));
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        /// <summary>
+        /// Use this method to configure the HTTP request pipeline.
+        /// This method gets called by the runtime.
+        /// </summary>
+        /// <param name="app">Application builder</param>
+        /// <param name="env">Web host environment</param>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
